@@ -4,7 +4,7 @@
 
 #include "base64.hpp"
 #include "byteutils.hpp"
-#include "repeatingkeyxor.hpp"
+#include "xorcipher.hpp"
 
 using namespace std;
 
@@ -15,6 +15,9 @@ int main()
     string input(begin, end);
     auto bytes = base64Decode(input);
 
-    breakRepeatingKeyXOR(bytes);
+    auto res = breakRepeatingKeyXOR(bytes);
+    for (const auto& s : res)
+        cout<<"Key: "<<bytesToString(s.second)<<endl<<"------------"<<endl
+            <<bytesToString(s.first)<<endl<<"==============="<<endl;
     return 0;
 }

@@ -2,7 +2,7 @@
 #include <utility>
 
 #include "hex.hpp"
-#include "singlekeyxor.hpp"
+#include "xorcipher.hpp"
 
 using namespace std;
 
@@ -10,9 +10,7 @@ int main()
 {
     freopen("3.txt", "r", stdin);
     string inp; cin>>inp;
-    string s = hexToText(inp);
-    pair<int, string> result = breakSingleKeyXOR(s); 
-    cout<<result.second<<endl;
+    cout<<breakSingleKeyXOR(hexDecode(inp)).second.first<<endl;
 
     return 0;
 }
