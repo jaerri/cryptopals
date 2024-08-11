@@ -5,16 +5,16 @@
 #include <utility>
 #include <vector>
 #include <bitset>
-#include <cstdint>
+
 
 #include "byteutils.hpp"
 #include "englishness.hpp"
 
 using namespace std;
 
-inline pair<double, pair<string, uint8_t>> breakSingleKeyXOR(vector<uint8_t> ciphertext)
+inline pair<double, pair<string, unsigned char>> breakSingleKeyXOR(vector<unsigned char> ciphertext)
 {
-    multimap<double, pair<string, uint8_t>> result;
+    multimap<double, pair<string, unsigned char>> result;
     for (int key=0; key<256; key++)
     {
         string decodedText;
@@ -25,26 +25,26 @@ inline pair<double, pair<string, uint8_t>> breakSingleKeyXOR(vector<uint8_t> cip
     }
     return *result.begin();
 }
-inline vector<uint8_t> repeatingKeyXOR(const vector<uint8_t>& bytes, const vector<uint8_t>& key)
+inline vector<unsigned char> repeatingKeyXOR(const vector<unsigned char>& bytes, const vector<unsigned char>& key)
 {
-    vector<uint8_t> res;
+    vector<unsigned char> res;
     for (unsigned long i=0; i<bytes.size(); i++)
     {
-        uint8_t keyc = key[i % (key.size())];
+        unsigned char keyc = key[i % (key.size())];
         res.push_back(bytes[i] ^ keyc);
     }
     return res;
 }
 
-inline int hammingDistance(const vector<uint8_t>& bin1, const vector<uint8_t>& bin2)
+inline int hammingDistance(const vector<unsigned char>& bin1, const vector<unsigned char>& bin2)
 {
-    vector<uint8_t> xored = xorBytes(bin1, bin2);
+    vector<unsigned char> xored = xorBytes(bin1, bin2);
     int result = 0;
-    for (uint8_t byte : xored)
+    for (unsigned char byte : xored)
         result += static_cast<bitset<8>>(byte).count();
     return result;
 }
-inline multimap<double, int> findKeysize(const vector<uint8_t>& bytes, unsigned long maxsize)
+inline multimap<double, int> findKeysize(const vector<unsigned char>& bytes, unsigned long maxsize)
 {
     multimap<double, int> sizeRating;
     for (unsigned long keysize=2; keysize<=min(maxsize, bytes.size()); keysize++)
@@ -54,8 +54,8 @@ inline multimap<double, int> findKeysize(const vector<uint8_t>& bytes, unsigned 
         {
             auto begin = bytes.begin()+j;
             auto end = begin+keysize;
-            vector<uint8_t> extract1(begin, end);
-            vector<uint8_t> extract2(end, end+keysize);
+            vector<unsigned char> extract1(begin, end);
+            vector<unsigned char> extract2(end, end+keysize);
             double score = (double)hammingDistance(extract1, extract2)/keysize;
             avgscore = avgscore==-1 ? score : (score+avgscore)/2;
         }
@@ -65,20 +65,20 @@ inline multimap<double, int> findKeysize(const vector<uint8_t>& bytes, unsigned 
     //     cout<<pair.second<<" ("<<pair.first<<')'<<endl;
     return sizeRating;
 }
-inline map<vector<uint8_t>, vector<uint8_t>> breakRepeatingKeyXOR(const vector<uint8_t>& bytes)
+inline map<vector<unsigned char>, vector<unsigned char>> breakRepeatingKeyXOR(const vector<unsigned char>& bytes)
 {
     auto keysizes = findKeysize(bytes, 40);
 
-    map<vector<uint8_t>, vector<uint8_t>> res;
+    map<vector<unsigned char>, vector<unsigned char>> res;
     int count = 0;
     const int tries = 2;
     for (auto it=keysizes.begin(); it!=keysizes.end() && count < tries; it++, count++)
     {
         int keysize = it->second;
-        vector<uint8_t> key;
+        vector<unsigned char> key;
         for (int i=0; i<keysize; i++)
         {
-            vector<uint8_t> block;
+            vector<unsigned char> block;
             for (unsigned long j=i; j<bytes.size(); j+=keysize)
             {
                 block.push_back(bytes[j]);

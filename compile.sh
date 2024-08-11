@@ -4,5 +4,19 @@ out=${1%.*}
 
 mkdir ./"$bin" -p
 
-g++ -std=c++17 -O2 -Wall "$@" -o ./"$bin"/"$out" 
+# for i in "$@"; do
+#     case "$i" in
+#         *.cpp)
+#             source+=("$i")
+#             shift
+#         ;;
+#         *)
+#             GXXFlags+=("$i")
+#             shift
+#         ;;
+#     esac
+# done
+#echo "flags:" "${GXXFlags[@]}"
+#echo "sources:" "${source[@]}"
+g++ -std=c++17 -g3 -ggdb -O0 -DDEBUG -Wall "$@" -o ./"$bin"/"$out"
 ./"$bin"/"$out"

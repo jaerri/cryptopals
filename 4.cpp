@@ -1,4 +1,4 @@
-#include <cstdint>
+
 #include <map>
 #include <string>
 #include <iostream>
@@ -14,7 +14,7 @@ int main()
     freopen("4.txt", "r", stdin);
 
     string input;
-    multimap<int, pair<string, uint8_t>> results;
+    multimap<int, pair<string, unsigned char>> results;
     while (getline(cin, input))
         results.insert(breakSingleKeyXOR(hexDecode(input)));
     cout<<results.begin()->second.first;

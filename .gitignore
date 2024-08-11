@@ -1,1 +1,3 @@
-bin/
+bin
+Crypto++\ ECB\ Test
+!.cpp
