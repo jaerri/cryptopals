@@ -18,5 +18,5 @@ mkdir ./"$bin" -p
 # done
 #echo "flags:" "${GXXFlags[@]}"
 #echo "sources:" "${source[@]}"
-g++ -std=c++17 -g3 -ggdb -O0 -DDEBUG -Wall "$@" -o ./"$bin"/"$out"
+g++ -std=c++17 -g3 -ggdb -O0 -DDEBUG -Wall -I./../ "$@" -o ./"$bin"/"$out"
 ./"$bin"/"$out"

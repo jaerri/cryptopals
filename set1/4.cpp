@@ -1,8 +1,7 @@
-
 #include <map>
-#include <string>
 #include <iostream>
 #include <utility>
+#include <string>
 
 #include "hex.hpp"
 #include "xorcipher.hpp"

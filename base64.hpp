@@ -1,10 +1,8 @@
 #pragma once
 
-
 #include <stdexcept>
-#include <string>
 #include <unordered_map>
-#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -12,7 +10,7 @@ constexpr char base64Table[] =
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "abcdefghijklmnopqrstuvwxyz"
                 "0123456789+/";
-inline string base64Encode(vector<unsigned char> bytes)
+inline string base64Encode(string bytes)
 {
     string result(((bytes.size()+2)/3)*4, '=');
     int accumulator=0, accumulator_size=0, indexpos=0; 
@@ -40,10 +38,10 @@ inline void generateReverseTable()
     reverseTable.insert({'+', 62});
     reverseTable.insert({'/', 63});
 }
-inline vector<unsigned char> base64Decode(string data)
+inline string base64Decode(string data)
 {
     if (reverseTable.empty()) generateReverseTable();
-    vector<unsigned char> res;
+    string res;
     
     int accumulator=0, accumulator_size=0;
     for (unsigned long i=0; i<data.size(); i++)
