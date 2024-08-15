@@ -1,30 +1,22 @@
 #pragma once
 
 #include <string>
+#include "byteutils.hpp"
 
 using namespace std;
 
-inline string hexDecode(const string& hexString)
+inline bytec hexDecode(const string& hexString)
 {
-    string bytes;
+    bytec bytes;
     for (unsigned int i = 0; i < hexString.length(); i += 2) {
         string byteString = hexString.substr(i, 2);
-        char byte = (char)stoll(byteString, nullptr, 16);
+        unsigned char byte = (unsigned char)stoll(byteString, nullptr, 16);
         bytes.push_back(byte);
     }
     return bytes;
 }
-inline string hexToText(const string& hexString)
-{
-    string bin = hexDecode(hexString);
-    string res;
-    for (unsigned long i=0; i<bin.size(); i++)
-        res += bin[i];
-
-    return res; 
-}
 constexpr char hexmap[] = "0123456789abcdef";
-inline string hexEncode(const string& bytes)
+inline string hexEncode(const bytec& bytes)
 {
     string res;
     for (unsigned long i=0; i<bytes.size(); i++)

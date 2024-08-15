@@ -4,17 +4,19 @@
 #include "aes.hpp"
 #include "base64.hpp"
 #include "byteutils.hpp"
+#include "hex.hpp"
 
 using namespace std;
 
 int main()
 {
-    freopen("7.txt", "rb", stdin);
+    freopen("10.txt", "r", stdin);
     istreambuf_iterator<char> begin(cin), end;
     string inp(begin, end);
     bytec cipher = base64Decode(inp);
-    bytec key = string2Bytec("YELLOW SUBMARINE");
-    cout<<bytec2String(AES_Block_Decrypt(cipher, key))<<endl;
+    bytec k = string2Bytec("YELLOW SUBMARINE");
+    bytec IV = hexDecode("00000000000000000000000000000000");
     
+    cout<<bytec2String(AES_CBC_Decrypt(cipher, k, IV))<<endl;
     return 0;
 }

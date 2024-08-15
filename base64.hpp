@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <string>
+#include "byteutils.hpp"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ constexpr char base64Table[] =
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "abcdefghijklmnopqrstuvwxyz"
                 "0123456789+/";
-inline string base64Encode(string bytes)
+inline string base64Encode(bytec bytes)
 {
     string result(((bytes.size()+2)/3)*4, '=');
     int accumulator=0, accumulator_size=0, indexpos=0; 
@@ -29,19 +30,19 @@ inline string base64Encode(string bytes)
 static unordered_map<char, unsigned char> reverseTable;
 inline void generateReverseTable()
 {
-    for (char c='A'; c<='Z'; c++)
+    for (unsigned char c='A'; c<='Z'; c++)
         reverseTable.insert({c, c-'A'});
-    for (char c='a'; c<='z'; c++)
+    for (unsigned char c='a'; c<='z'; c++)
         reverseTable.insert({c, c-'a'+26});
-    for (char c='0'; c<='9'; c++)
+    for (unsigned char c='0'; c<='9'; c++)
         reverseTable.insert({c, c-'0'+52});
     reverseTable.insert({'+', 62});
     reverseTable.insert({'/', 63});
 }
-inline string base64Decode(string data)
+inline bytec base64Decode(string data)
 {
     if (reverseTable.empty()) generateReverseTable();
-    string res;
+    bytec res;
     
     int accumulator=0, accumulator_size=0;
     for (unsigned long i=0; i<data.size(); i++)

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "byteutils.hpp"
 #include "hex.hpp"
 #include "xorcipher.hpp"
 
@@ -15,7 +16,7 @@ int main()
     istreambuf_iterator<char> begin(cin), end;
     string inp(begin, end);
     
-    string encrypted = repeatingKeyXOR(inp, key);
+    bytec encrypted = repeatingKeyXOR(string2Bytec(inp), string2Bytec(key));
     cout<<hexEncode(encrypted)<<endl;
     // cout<<bytesView(breakRepeatingKeyXOR(encrypted));
     return 0;

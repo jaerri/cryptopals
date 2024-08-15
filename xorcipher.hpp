@@ -7,19 +7,20 @@
 #include <bitset>
 
 #include "englishness.hpp"
+#include "byteutils.hpp"
 
 using namespace std;
 
-inline string xorBytes(const string& bin1, const string& bin2)
+inline bytec xorBytes(const bytec& bin1, const bytec& bin2)
 {
     assert(bin1.size() == bin2.size());
-    string res;
+    bytec res;
     
     for (unsigned long i=0; i<bin1.size(); i++)
         res += bin1[i] ^ bin2[i];
     return res;
 }
-inline pair<double, pair<string, unsigned char>> breakSingleKeyXOR(string ciphertext)
+inline pair<double, pair<string, unsigned char>> breakSingleKeyXOR(bytec ciphertext)
 {
     multimap<double, pair<string, unsigned char>> result;
     for (int key=0; key<256; key++)
@@ -32,9 +33,9 @@ inline pair<double, pair<string, unsigned char>> breakSingleKeyXOR(string cipher
     }
     return *result.begin();
 }
-inline string repeatingKeyXOR(const string& bytes, const string& key)
+inline bytec repeatingKeyXOR(const bytec& bytes, const bytec& key)
 {
-    string res;
+    bytec res;
     for (unsigned long i=0; i<bytes.size(); i++)
     {
         unsigned char keyc = key[i % (key.size())];
@@ -43,15 +44,15 @@ inline string repeatingKeyXOR(const string& bytes, const string& key)
     return res;
 }
 
-inline int hammingDistance(const string& bin1, const string& bin2)
+inline int hammingDistance(const bytec& bin1, const bytec& bin2)
 {
-    string xored = xorBytes(bin1, bin2);
+    bytec xored = xorBytes(bin1, bin2);
     int result = 0;
     for (unsigned char byte : xored)
         result += static_cast<bitset<8>>(byte).count();
     return result;
 }
-inline multimap<double, int> findKeysize(const string& bytes, unsigned long maxsize)
+inline multimap<double, int> findKeysize(const bytec& bytes, unsigned long maxsize)
 {
     multimap<double, int> sizeRating;
     for (unsigned long keysize=2; keysize<=min(maxsize, bytes.size()); keysize++)
@@ -61,8 +62,8 @@ inline multimap<double, int> findKeysize(const string& bytes, unsigned long maxs
         {
             auto begin = bytes.begin()+j;
             auto end = begin+keysize;
-            string extract1(begin, end);
-            string extract2(end, end+keysize);
+            bytec extract1(begin, end);
+            bytec extract2(end, end+keysize);
             double score = (double)hammingDistance(extract1, extract2)/keysize;
             avgscore = avgscore==-1 ? score : (score+avgscore)/2;
         }
@@ -72,20 +73,20 @@ inline multimap<double, int> findKeysize(const string& bytes, unsigned long maxs
     //     cout<<pair.second<<" ("<<pair.first<<')'<<endl;
     return sizeRating;
 }
-inline map<string, string> breakRepeatingKeyXOR(const string& bytes)
+inline map<string, bytec> breakRepeatingKeyXOR(const bytec& bytes)
 {
     auto keysizes = findKeysize(bytes, 40);
 
-    map<string, string> res;
+    map<string, bytec> res;
     int count = 0;
     const int tries = 2;
     for (auto it=keysizes.begin(); it!=keysizes.end() && count < tries; it++, count++)
     {
         int keysize = it->second;
-        string key;
+        bytec key;
         for (int i=0; i<keysize; i++)
         {
-            string block;
+            bytec block;
             for (unsigned long j=i; j<bytes.size(); j+=keysize)
             {
                 block.push_back(bytes[j]);
@@ -93,7 +94,7 @@ inline map<string, string> breakRepeatingKeyXOR(const string& bytes)
             auto blockResult = breakSingleKeyXOR(block);
             key.push_back((char)blockResult.second.second);
         }
-        res.insert({repeatingKeyXOR(bytes, key), key});
+        res.insert({bytec2String(repeatingKeyXOR(bytes, key)), key});
     }
     return res;
 }

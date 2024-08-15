@@ -1,5 +1,4 @@
 bin
-compile_flags.txt
 !.cpp
 
 Crypto++\ ECB\ Test

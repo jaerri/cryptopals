@@ -3,6 +3,7 @@
 #include <string>
 
 #include "hex.hpp"
+#include "byteutils.hpp"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ int main()
 	string result; int maxscore=0;
 	while (getline(cin, input))
 	{
-		string bytes = hexDecode(input);
+		bytec bytes = hexDecode(input);
 		int score = 0;
 		for (auto it=bytes.begin(); it!=bytes.end(); it+=16)
 		{
