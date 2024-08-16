@@ -3,15 +3,9 @@
 
 #include "byteutils.hpp"
 #include "hex.hpp"
+#include "aes.hpp"
 
 using namespace std;
-
-bytec padPKCS7(bytec& bytes, int k)
-{
-    int noOfPads = k - (bytes.size() % k);
-    bytes.append(noOfPads, static_cast<char>(noOfPads));
-    return bytes;
-}
 
 int main()
 {

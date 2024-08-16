@@ -14,7 +14,7 @@ int main()
     string inp(begin, end);
     bytec cipher = base64Decode(inp);
     bytec key = string2Bytec("YELLOW SUBMARINE");
-    cout<<bytec2String(AES_Block_Decrypt(cipher, key))<<endl;
+    cout<<bytec2String(AES_ECB_Decrypt(cipher, key))<<endl;
     
     return 0;
 }
