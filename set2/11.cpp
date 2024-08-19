@@ -17,8 +17,9 @@ int main()
     uniform_int_distribution<int> fivetoten(5, 10);
 
     AutoSeededRandomPool prng;
-    for (int i=0; i<AES::DEFAULT_KEYLENGTH; i++)
-        key += prng.GenerateByte();
+    SecByteBlock k;
+    prng.GenerateBlock(k, AES::DEFAULT_KEYLENGTH);
+	// SecByteBlock k((CryptoPP::byte*)key.c_str(), AES::DEFAULT_KEYLENGTH);
     bytec append, prepend;
     for (int i=0; i<fivetoten(mt); i++)
         prepend += prng.GenerateByte();
@@ -34,19 +35,19 @@ int main()
         bytec iv;
         for (int i=0; i<AES::BLOCKSIZE; i++)
             iv += prng.GenerateByte();
-        res = AES_CBC_Encrypt(msg, key, iv);
+        res = AES_CBC_Encrypt(msg, k, iv);
         cout<<"mode: CBC"<<'\n';
         cout<<hexEncode(res)<<endl;
         cout<<"==================="<<endl;
-        cout<<bytec2String(AES_CBC_Decrypt(res, key, iv))<<endl;
+        cout<<bytec2String(AES_CBC_Decrypt(res, k, iv))<<endl;
     }
     else
     {
-        res = AES_ECB_Encrypt(msg, key);
+        res = AES_ECB_Encrypt(msg, k);
         cout<<"mode: ECB"<<'\n';
         cout<<hexEncode(res)<<endl;
         cout<<"==================="<<endl;
-        cout<<bytec2String(AES_ECB_Decrypt(res, key))<<endl;
+        cout<<bytec2String(AES_ECB_Decrypt(res, k))<<endl;
     }
     cout<<"guessed mode: "<<(AES_ECB_Detect(res)?"ECB":"CBC")<<endl;
 
